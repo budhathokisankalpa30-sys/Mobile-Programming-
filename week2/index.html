@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marks Calculator</title>
+
+    <!-- <link rel="stylesheet" href="style.css"> -->
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>Marks Calculator</h1>
+
+        <form onsubmit="calculateResult(event)">
+
+            <div class="input-group">
+                <label>English</label>
+                <input type="number" id="EngMarks" required>
+            </div>
+
+            <div class="input-group">
+                <label>Nepali</label>
+                <input type="number" id="NepMarks" required>
+            </div>
+
+            <div class="input-group">
+                <label>Science</label>
+                <input type="number" id="SciMarks" required>
+            </div>
+
+            <div class="input-group">
+                <label>Mathematics</label>
+                <input type="number" id="MathsMarks" required>
+            </div>
+
+            <div class="input-group">
+                <label>Optional Mathematics</label>
+                <input type="number" id="OptMathsMarks" required>
+            </div>
+
+            <div class="input-group">
+                <label>Social Studies</label>
+                <input type="number" id="SocMarks" required>
+            </div>
+
+            <div class="input-group">
+                <label>Computer Science</label>
+                <input type="number" id="CompSciMarks" required>
+            </div>
+
+            <div class="input-group">
+                <label>Health</label>
+                <input type="number" id="HealthMarks" required>
+            </div>
+
+            <button type="submit">Calculate Result</button>
+
+        </form>
+
+        <div id="result"></div>
+
+    </div>
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>
