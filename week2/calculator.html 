@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Calculator (Simple)</title>
+		<style>
+			body{font-family:Arial,Helvetica,sans-serif;padding:24px;background:#f5f7fa}
+			.wrap{max-width:420px;margin:0 auto;background:#fff;padding:18px;border-radius:10px;box-shadow:0 6px 18px rgba(10,20,30,0.06)}
+			.row{display:flex;gap:8px;margin-bottom:12px}
+			input{flex:1;padding:8px;border-radius:6px;border:1px solid #ddd;font-size:16px}
+			button{padding:10px 12px;border-radius:6px;border:0;background:#0077ff;color:#fff;font-weight:600;cursor:pointer}
+			button.secondary{background:#6b7280}
+			.result{margin-top:14px;padding:12px;background:#f0f8ff;border:1px solid #dbeefc;border-radius:8px;text-align:center}
+			.error{color:#b91c1c;margin-top:8px;text-align:center}
+			.controls{display:flex;gap:8px}
+			.clear{background:#fff;color:#333;border:1px solid #ddd}
+		</style>
+	</head>
+	<body>
+		<div class="wrap">
+			<h2>Simple Calculator</h2>
+			<div class="row">
+				<input id="a" type="number" placeholder="First number">
+				<input id="b" type="number" placeholder="Second number">
+			</div>
+			<div class="controls">
+				<button id="add">Add</button>
+				<button id="sub" class="secondary">Subtract</button>
+				<button id="mul">Multiply</button>
+				<button id="div" class="secondary">Divide</button>
+				<button id="clear" class="clear">Clear</button>
+			</div>
+
+			<div class="result" id="result">Result: —</div>
+			<div class="error" id="error" aria-live="polite"></div>
+		</div>
+
+		<script>
+			const aEl = document.getElementById('a');
+			const bEl = document.getElementById('b');
+			const resultEl = document.getElementById('result');
+			const errorEl = document.getElementById('error');
+
+			function showError(msg){ errorEl.textContent = msg }
+			function clearError(){ errorEl.textContent = '' }
+
+			function parseInputs(){
+				clearError();
+				const a = aEl.value; const b = bEl.value;
+				if (a === '' || b === ''){ showError('Please enter both numbers.'); return null }
+				const an = parseFloat(a); const bn = parseFloat(b);
+				if (!isFinite(an) || !isFinite(bn)){ showError('Invalid number'); return null }
+				return {an,bn};
+			}
+
+			function setResult(v){ resultEl.textContent = 'Result: ' + v }
+
+			document.getElementById('add').addEventListener('click', ()=>{ const p = parseInputs(); if (!p) return; setResult(p.an + p.bn) });
+			document.getElementById('sub').addEventListener('click', ()=>{ const p = parseInputs(); if (!p) return; setResult(p.an - p.bn) });
+			document.getElementById('mul').addEventListener('click', ()=>{ const p = parseInputs(); if (!p) return; setResult(p.an * p.bn) });
+			document.getElementById('div').addEventListener('click', ()=>{ const p = parseInputs(); if (!p) return; if (p.bn === 0){ showError('Cannot divide by zero'); return } setResult(p.an / p.bn) });
+			document.getElementById('clear').addEventListener('click', ()=>{ aEl.value=''; bEl.value=''; resultEl.textContent='Result: —'; clearError() });
+
+			// Enter triggers add
+			[aEl,bEl].forEach(el=>el.addEventListener('keydown', e=>{ if (e.key === 'Enter') document.getElementById('add').click() }))
+		</script>
+	</body>
+</html>
+

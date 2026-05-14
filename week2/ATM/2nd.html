@@ -1,0 +1,169 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Simple ATM System</title>
+
+  <style>
+    body{
+      font-family: Arial, sans-serif;
+      background:#f4f4f4;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      height:100vh;
+    }
+
+    .container{
+      background:white;
+      padding:30px;
+      border-radius:12px;
+      width:320px;
+      box-shadow:0 0 10px rgba(0,0,0,0.1);
+      text-align:center;
+    }
+
+    h2{
+      margin-bottom:20px;
+    }
+
+    input{
+      width:100%;
+      padding:10px;
+      margin-bottom:15px;
+      border:1px solid #ccc;
+      border-radius:6px;
+      font-size:16px;
+      box-sizing:border-box;
+    }
+
+    .buttons{
+      display:flex;
+      gap:10px;
+    }
+
+    button{
+      flex:1;
+      padding:10px;
+      border:none;
+      border-radius:6px;
+      cursor:pointer;
+      font-size:16px;
+      color:white;
+    }
+
+    .withdraw{
+      background:#e74c3c;
+    }
+
+    .deposit{
+      background:#2ecc71;
+    }
+
+    .balance{
+      margin-top:20px;
+      font-size:18px;
+      font-weight:bold;
+    }
+
+    .message{
+      margin-top:10px;
+      color:#333;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>ATM System</h2>
+
+    <input type="number" id="amount" placeholder="Enter amount" />
+
+    <div class="buttons">
+      <button class="withdraw" onclick="withdrawMoney()">Withdraw</button>
+      <button class="deposit" onclick="depositMoney()">Deposit</button>
+    </div>
+
+    <div class="balance">
+      Current Balance: Rs. <span id="balance">10000</span>
+    </div>
+
+    <div class="message" id="message"></div>
+  </div>
+
+  <script>
+    let bankBalance = 10000;
+    const correctPin = "1234";
+
+    function validateAmount(amount) {
+
+      if (amount <= 0 || isNaN(amount)) {
+        showMessage("Please enter a valid amount.");
+        return false;
+      }
+
+      if (amount % 100 !== 0) {
+        showMessage("Amount must be a multiple of 100.");
+        return false;
+      }
+
+      return true;
+    }
+
+    function withdrawMoney() {
+
+      const amount = parseInt(document.getElementById("amount").value);
+
+      if (!validateAmount(amount)) return;
+
+      const pin = prompt("Enter PIN:");
+
+      if (pin !== correctPin) {
+        showMessage("Incorrect PIN.");
+        return;
+      }
+
+      if (amount > bankBalance) {
+        showMessage("Insufficient balance.");
+        return;
+      }
+
+      bankBalance -= amount;
+
+      updateBalance();
+      showMessage(`Rs. ${amount} withdrawn successfully.`);
+    }
+
+    function depositMoney() {
+
+      const amount = parseInt(document.getElementById("amount").value);
+
+      if (!validateAmount(amount)) return;
+
+      const pin = prompt("Enter PIN:");
+
+      if (pin !== correctPin) {
+        showMessage("Incorrect PIN.");
+        return;
+      }
+
+      bankBalance += amount;
+
+      updateBalance();
+      showMessage(`Rs. ${amount} deposited successfully.`);
+    }
+
+    function updateBalance() {
+      document.getElementById("balance").innerText = bankBalance;
+    }
+
+    function showMessage(msg) {
+      document.getElementById("message").innerText = msg;
+    }
+  </script>
+
+</body>
+</html>
+
