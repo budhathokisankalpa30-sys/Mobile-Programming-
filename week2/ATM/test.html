@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Simple ATM System</title>
+
+  <!-- jQuery -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+
+  <style>
+    body{
+      font-family: Arial, sans-serif;
+      background:#f4f4f4;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      height:100vh;
+    }
+
+    .container{
+      background:white;
+      padding:30px;
+      border-radius:12px;
+      width:320px;
+      box-shadow:0 0 10px rgba(0,0,0,0.1);
+      text-align:center;
+    }
+
+    h2{
+      margin-bottom:20px;
+    }
+
+    input{
+      width:100%;
+      padding:10px;
+      margin-bottom:15px;
+      border:1px solid #ccc;
+      border-radius:6px;
+      font-size:16px;
+      box-sizing:border-box;
+    }
+
+    .buttons{
+      display:flex;
+      gap:10px;
+    }
+
+    button{
+      flex:1;
+      padding:10px;
+      border:none;
+      border-radius:6px;
+      cursor:pointer;
+      font-size:16px;
+      color:white;
+    }
+
+    .withdraw{
+      background:#e74c3c;
+    }
+
+    .deposit{
+      background:#2ecc71;
+    }
+
+    .balance{
+      margin-top:20px;
+      font-size:18px;
+      font-weight:bold;
+    }
+
+    .message{
+      margin-top:10px;
+      color:#333;
+    }
+
+    .eye-icon{
+      cursor:pointer;
+      margin-left:10px;
+      color:#333;
+    }
+
+    #amount{
+      display:none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+
+    <h2>ATM System</h2>
+
+    <!-- Amount Input Hidden Initially -->
+    <input type="number" id="amount" placeholder="Enter amount" />
+
+    <div class="buttons">
+      <button class="withdraw" id="withdrawBtn">Withdraw</button>
+      <button class="deposit" id="depositBtn">Deposit</button>
+    </div>
+
+    <div class="balance">
+      Current Balance: Rs.
+      <span id="balance">****</span>
+
+      <!-- Eye Icon -->
+      <i class="fa-solid fa-eye-slash eye-icon" id="toggleEye"></i>
+    </div>
+
+    <div class="message" id="message"></div>
+
+  </div>
+
+  <script>
+
+    let bankBalance = 10000;
+    const correctPin = "1234";
+
+    let balanceVisible = false;
+    let currentAction = "";
+
+    // Eye Toggle
+    $("#toggleEye").click(function(){
+
+      if(balanceVisible){
+
+        // Hide Balance
+        $("#balance").text("****");
+
+        // Crossed Eye
+        $(this)
+          .removeClass("fa-eye")
+          .addClass("fa-eye-slash");
+
+        balanceVisible = false;
+
+      } else {
+
+        // Show Balance
+        $("#balance").text(bankBalance);
+
+        // Open Eye
+        $(this)
+          .removeClass("fa-eye-slash")
+          .addClass("fa-eye");
+
+        balanceVisible = true;
+      }
+
+    });
+
+    // Withdraw Button
+    $("#withdrawBtn").click(function(){
+
+      $("#amount").show().focus();
+      currentAction = "withdraw";
+
+      processTransaction();
+
+    });
+
+    // Deposit Button
+    $("#depositBtn").click(function(){
+
+      $("#amount").show().focus();
+      currentAction = "deposit";
+
+      processTransaction();
+
+    });
+
+    function processTransaction(){
+
+      $("#amount").off("keypress").on("keypress", function(e){
+
+        if(e.which == 13){
+
+          const amount = parseInt($("#amount").val());
+
+          if (!validateAmount(amount)) return;
+
+          const pin = prompt("Enter PIN:");
+
+          if (pin !== correctPin) {
+            showMessage("Incorrect PIN.");
+            return;
+          }
+
+          if(currentAction === "withdraw"){
+
+            if (amount > bankBalance) {
+              showMessage("Insufficient balance.");
+              return;
+            }
+
+            bankBalance -= amount;
+
+            showMessage(`Rs. ${amount} withdrawn successfully.`);
+
+          } else if(currentAction === "deposit"){
+
+            bankBalance += amount;
+
+            showMessage(`Rs. ${amount} deposited successfully.`);
+          }
+
+          updateBalance();
+
+          $("#amount").val("");
+        }
+
+      });
+
+    }
+
+    function validateAmount(amount) {
+
+      if (amount <= 0 || isNaN(amount)) {
+        showMessage("Please enter a valid amount.");
+        return false;
+      }
+
+      if (amount % 100 !== 0) {
+        showMessage("Amount must be a multiple of 100.");
+        return false;
+      }
+
+      return true;
+    }
+
+    function updateBalance() {
+
+      // Update only if visible
+      if(balanceVisible){
+        $("#balance").text(bankBalance);
+      }
+
+    }
+
+    function showMessage(msg) {
+      $("#message").text(msg);
+    }
+
+  </script>
+
+</body>
+</html>

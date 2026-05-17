@@ -79,90 +79,147 @@
   <div class="container">
     <h2>ATM System</h2>
 
-    <input type="number" id="amount" placeholder="Enter amount" />
-
-    <div class="buttons">
-      <button class="withdraw" onclick="withdrawMoney()">Withdraw</button>
-      <button class="deposit" onclick="depositMoney()">Deposit</button>
+    <!-- amount input is hidden initially; revealed when user clicks Withdraw/Deposit -->
+    <div id="amountWrap" style="display:none;">
+      <input type="number" id="amount" placeholder="Enter amount" />
     </div>
 
-    <div class="balance">
-      Current Balance: Rs. <span id="balance">10000</span>
+    <div class="buttons">
+      <button class="withdraw" id="withdrawBtn">Withdraw</button>
+      <button class="deposit" id="depositBtn">Deposit</button>
+    </div>
+
+    <div class="balance" style="display:flex;align-items:center;justify-content:center;gap:8px;">
+      <div>Current Balance: Rs. <span id="balance">10000</span></div>
+      <!-- Eye toggle button -->
+      <button id="toggleEye" aria-pressed="false" title="Toggle balance visibility" style="background:none;border:none;cursor:pointer;padding:6px">
+        <!-- open eye (visible) by default -->
+        <svg id="eyeOpen" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+        <svg id="eyeClosed" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M17.94 17.94A10.94 10.94 0 0 1 12 20c-7 0-11-8-11-8a21.79 21.79 0 0 1 5.06-7.06"></path><path d="M1 1l22 22"></path></svg>
+      </button>
     </div>
 
     <div class="message" id="message"></div>
   </div>
 
-  <script>
+    <script>
     let bankBalance = 10000;
     const correctPin = "1234";
 
-    function validateAmount(amount) {
+    const amountWrap = document.getElementById('amountWrap');
+    const amountInput = document.getElementById('amount');
+    const withdrawBtn = document.getElementById('withdrawBtn');
+    const depositBtn = document.getElementById('depositBtn');
+    const toggleEye = document.getElementById('toggleEye');
+    const eyeOpen = document.getElementById('eyeOpen');
+    const eyeClosed = document.getElementById('eyeClosed');
+    const balanceEl = document.getElementById('balance');
 
+    let amountVisibleFor = null; // 'withdraw' or 'deposit' when amount input is shown
+
+    function validateAmount(amount) {
       if (amount <= 0 || isNaN(amount)) {
         showMessage("Please enter a valid amount.");
         return false;
       }
-
       if (amount % 100 !== 0) {
         showMessage("Amount must be a multiple of 100.");
         return false;
       }
-
       return true;
     }
 
-    function withdrawMoney() {
-
-      const amount = parseInt(document.getElementById("amount").value);
-
-      if (!validateAmount(amount)) return;
-
+    function performWithdraw(amount){
       const pin = prompt("Enter PIN:");
-
-      if (pin !== correctPin) {
-        showMessage("Incorrect PIN.");
-        return;
-      }
-
-      if (amount > bankBalance) {
-        showMessage("Insufficient balance.");
-        return;
-      }
-
+      if (pin !== correctPin) { showMessage("Incorrect PIN."); return; }
+      if (amount > bankBalance) { showMessage("Insufficient balance."); return; }
       bankBalance -= amount;
-
       updateBalance();
       showMessage(`Rs. ${amount} withdrawn successfully.`);
     }
 
-    function depositMoney() {
-
-      const amount = parseInt(document.getElementById("amount").value);
-
-      if (!validateAmount(amount)) return;
-
+    function performDeposit(amount){
       const pin = prompt("Enter PIN:");
-
-      if (pin !== correctPin) {
-        showMessage("Incorrect PIN.");
-        return;
-      }
-
+      if (pin !== correctPin) { showMessage("Incorrect PIN."); return; }
       bankBalance += amount;
-
       updateBalance();
       showMessage(`Rs. ${amount} deposited successfully.`);
     }
 
+    function withdrawMoney(){
+      // If amount input not visible for withdraw, show it and focus
+      if (amountVisibleFor !== 'withdraw'){
+        amountVisibleFor = 'withdraw';
+        amountWrap.style.display = 'block';
+        amountInput.focus();
+        showMessage('Enter amount to withdraw and click Withdraw again.');
+        return;
+      }
+
+      const amount = parseInt(amountInput.value);
+      if (!validateAmount(amount)) return;
+      performWithdraw(amount);
+      // reset
+      amountInput.value = '';
+      amountWrap.style.display = 'none';
+      amountVisibleFor = null;
+    }
+
+    function depositMoney(){
+      if (amountVisibleFor !== 'deposit'){
+        amountVisibleFor = 'deposit';
+        amountWrap.style.display = 'block';
+        amountInput.focus();
+        showMessage('Enter amount to deposit and click Deposit again.');
+        return;
+      }
+
+      const amount = parseInt(amountInput.value);
+      if (!validateAmount(amount)) return;
+      performDeposit(amount);
+      amountInput.value = '';
+      amountWrap.style.display = 'none';
+      amountVisibleFor = null;
+    }
+
     function updateBalance() {
-      document.getElementById("balance").innerText = bankBalance;
+      balanceEl.innerText = bankBalance;
     }
 
     function showMessage(msg) {
       document.getElementById("message").innerText = msg;
     }
-  </script>
+
+    // Eye toggle handler
+    toggleEye.addEventListener('click', ()=>{
+      const isVisible = toggleEye.getAttribute('aria-pressed') === 'true';
+      if (isVisible){
+        // hide
+        balanceEl.innerText = '*****';
+        toggleEye.setAttribute('aria-pressed','false');
+        eyeOpen.style.display = 'none';
+        eyeClosed.style.display = 'inline';
+      } else {
+        // show
+        balanceEl.innerText = bankBalance;
+        toggleEye.setAttribute('aria-pressed','true');
+        eyeOpen.style.display = 'inline';
+        eyeClosed.style.display = 'none';
+      }
+    });
+
+    // Attach click handlers to buttons
+    withdrawBtn.addEventListener('click', withdrawMoney);
+    depositBtn.addEventListener('click', depositMoney);
+
+    // initialize as visible
+    toggleEye.setAttribute('aria-pressed','true');
+    eyeOpen.style.display = 'inline';
+    eyeClosed.style.display = 'none';
+
+    // update balance display
+    updateBalance();
+    </script>
 
 </body>
 </html>
