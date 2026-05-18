@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Simple Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      background: #f5f5f5;
+      color: #333;
+    }
+    .calculator {
+      background: white;
+      padding: 24px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      width: min(360px, 90vw);
+    }
+    .inputs {
+      display: grid;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    input {
+      width: 100%;
+      padding: 12px;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      box-sizing: border-box;
+    }
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    button {
+      padding: 12px 0;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      background: #007bff;
+      color: white;
+      transition: background 0.2s ease;
+    }
+    button:hover {
+      background: #0056d2;
+    }
+    .output {
+      font-size: 1.2rem;
+      padding: 14px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      background: #fafafa;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="calculator">
+    <h1>Simple Calculator</h1>
+    <div class="inputs">
+      <input id="value1" type="number" placeholder="Enter first value" />
+      <input id="value2" type="number" placeholder="Enter second value" />
+    </div>
+    <div class="buttons">
+      <button type="button" data-op="+">+</button>
+      <button type="button" data-op="-">-</button>
+      <button type="button" data-op="*">×</button>
+      <button type="button" data-op="/">÷</button>
+    </div>
+    <div class="output" id="result">Result will appear here</div>
+  </div>
+
+  <script>
+    const value1 = document.getElementById('value1');
+    const value2 = document.getElementById('value2');
+    const result = document.getElementById('result');
+
+    function calculate(operation) {
+      const num1 = parseFloat(value1.value);
+      const num2 = parseFloat(value2.value);
+
+      if (Number.isNaN(num1) || Number.isNaN(num2)) {
+        result.textContent = 'Please enter both numbers.';
+        return;
+      }
+ 
+      let output;
+
+      switch (operation) {
+        case '+':
+          output = num1 + num2;
+          break;
+        case '-':
+          output = num1 - num2;
+          break;
+        case '*':
+          output = num1 * num2;
+          break;
+        case '/':
+          if (num2 === 0) {
+            result.textContent = 'Cannot divide by zero.';
+            return;
+          }
+          output = num1 / num2;
+          break;
+        default:
+          output = 'Unknown operation';
+      }
+
+      result.textContent = `Result: ${output}`;
+    }
+
+    document.querySelectorAll('button[data-op]').forEach((button) => {
+      button.addEventListener('click', () => {
+        calculate(button.dataset.op);
+      });
+    });
+  </script>
+</body>
+</html>

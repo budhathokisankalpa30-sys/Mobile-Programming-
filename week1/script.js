@@ -1,8 +1,6 @@
-function calculateResult(event) {
+function calculateResult() {
 
-    event.preventDefault();
-
-    let EnglishMarks = Number(document.getElementById("EngMarks").value);
+    let EnglishMarks = Number(document.getElementById("EngMarks").value || 0);
     let NepaliMarks = Number(document.getElementById("NepMarks").value);
     let ScienceMarks = Number(document.getElementById("SciMarks").value);
     let MathsMarks = Number(document.getElementById("MathsMarks").value);
@@ -22,35 +20,25 @@ function calculateResult(event) {
         HealthMarks;
 
     let result = document.getElementById("result");
+    let totalEl = document.getElementById("total");
+
+    totalEl.innerText = `Total Marks: ${totalMarks}`;
 
     if (totalMarks > 700) {
         result.style.color = "#06963b";
-        result.innerText =
-            `Total Marks: ${totalMarks} | Distinction`;
-    }
-
-    else if (totalMarks > 600) {
+        result.innerText = `Distinction`;
+    } else if (totalMarks > 600) {
         result.style.color = "#57aa75";
-        result.innerText =
-            `Total Marks: ${totalMarks} | First Division`;
-    }
-
-    else if (totalMarks >= 500) {
+        result.innerText = `First Division`;
+    } else if (totalMarks >= 500) {
         result.style.color = "#38bdf8";
-        result.innerText =
-            `Total Marks: ${totalMarks} | Second Division`;
-    }
-
-    else if (totalMarks >= 400) {
+        result.innerText = `Second Division`;
+    } else if (totalMarks >= 400) {
         result.style.color = "#facc15";
-        result.innerText =
-            `Total Marks: ${totalMarks} | Third Division`;
-    }
-
-    else {
+        result.innerText = `Third Division`;
+    } else {
         result.style.color = "#ef4444";
-        result.innerText =
-            `Total Marks: ${totalMarks} | Fail`;
+        result.innerText = `Fail`;
     }
 
 }
