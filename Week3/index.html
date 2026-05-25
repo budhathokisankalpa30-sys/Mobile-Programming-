@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>ACP Pradyuman CID Profile Card</title>
+
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+  <style>
+
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family:Arial, Helvetica, sans-serif;
+    }
+
+    body{
+      min-height:100vh;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      align-items:center;
+      background:linear-gradient(135deg,#0f172a,#1e293b,#334155);
+      padding:40px 20px;
+      overflow-x:hidden;
+    }
+
+    #profile-card{
+      width:400px;
+      background:#f8fafc;
+      border-radius:25px;
+      padding:30px;
+      text-align:center;
+      box-shadow:0 15px 40px rgba(0,0,0,0.4);
+      transition:0.4s;
+      position:relative;
+    }
+
+    #profile-photo{
+      width:160px;
+      height:160px;
+      object-fit:cover;
+      border-radius:20px;
+      border:5px solid #1d4ed8;
+      margin-bottom:20px;
+      transition:0.4s;
+    }
+
+    #student-name{
+      font-size:34px;
+      color:#111827;
+      margin-bottom:10px;
+      font-weight:bold;
+    }
+
+    #student-bio{
+      color:#374151;
+      line-height:1.7;
+      margin-bottom:25px;
+      font-size:16px;
+    }
+
+    #nickname-input{
+      width:100%;
+      padding:14px;
+      border-radius:12px;
+      border:2px solid #cbd5e1;
+      outline:none;
+      margin-bottom:25px;
+      font-size:16px;
+    }
+
+    #skills-list{
+      list-style:none;
+      margin-bottom:25px;
+    }
+
+    #skills-list li{
+      background:linear-gradient(90deg,#1d4ed8,#2563eb);
+      color:white;
+      padding:12px;
+      margin:10px 0;
+      border-radius:10px;
+      font-weight:bold;
+      letter-spacing:1px;
+    }
+
+    #output{
+      background:#111827;
+      color:#22c55e;
+      border-radius:12px;
+      padding:15px;
+      min-height:60px;
+      font-size:17px;
+      margin-top:15px;
+      word-break:break-word;
+    }
+
+    .button-container{
+      width:95%;
+      max-width:1000px;
+      margin-top:35px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:14px;
+      justify-content:center;
+    }
+
+    button{
+      padding:12px 18px;
+      border:none;
+      border-radius:12px;
+      background:linear-gradient(135deg,#2563eb,#1e40af);
+      color:white;
+      cursor:pointer;
+      font-size:15px;
+      font-weight:bold;
+      transition:0.3s;
+    }
+
+    button:hover{
+      transform:translateY(-3px);
+      box-shadow:0 8px 20px rgba(0,0,0,0.3);
+    }
+
+    .highlighted{
+      border:5px solid gold;
+      transform:scale(1.03);
+    }
+
+    .dark-mode{
+      background:#111827 !important;
+      color:white !important;
+    }
+
+    .rounded{
+      border-radius:50% !important;
+    }
+
+    .shadow{
+      box-shadow:0 0 30px #2563eb;
+    }
+
+  </style>
+
+</head>
+
+<body>
+
+  <div id="profile-card">
+
+    <img
+      id="profile-photo"
+      src="ACP.png"
+      alt="ACP Pradyuman"
+    >
+
+    <h1 id="student-name">ACP Pradyuman</h1>
+
+    <div id="student-bio">
+      <strong>Senior CID Officer</strong><br>
+      Famous for solving complex criminal cases with intelligence,
+      leadership, and investigation skills.
+    </div>
+
+    <input
+      type="text"
+      id="nickname-input"
+      placeholder="Enter codename"
+    >
+
+    <ul id="skills-list">
+      <li>Investigation</li>
+      <li>Crime Analysis</li>
+      <li>Leadership</li>
+      <li>Interrogation</li>
+    </ul>
+
+    <div id="output">
+      CID System Output...
+    </div>
+
+  </div>
+
+  <div class="button-container">
+
+    <button id="show-name">Show Name</button>
+    <button id="change-name">Change Name</button>
+    <button id="show-bio">Show Bio</button>
+    <button id="get-input">Get Input</button>
+    <button id="set-input">Set Input</button>
+
+    <button id="highlight-card">Highlight Card</button>
+    <button id="remove-highlight">Remove Highlight</button>
+    <button id="toggle-dark">Toggle Dark Mode</button>
+    <button id="toggle-rounded">Toggle Rounded</button>
+
+    <button id="red-bg">Red Background</button>
+    <button id="reset-bg">Reset Background</button>
+
+    <button id="hide-photo">Hide Photo</button>
+    <button id="show-photo">Show Photo</button>
+    <button id="toggle-bio">Toggle Bio</button>
+
+    <button id="fade-out">Fade Out Card</button>
+    <button id="fade-in">Fade In Card</button>
+    <button id="fade-half">Fade to 50%</button>
+
+    <button id="slide-up">Slide Up Skills</button>
+    <button id="slide-down">Slide Down Skills</button>
+    <button id="slide-toggle">Slide Toggle Skills</button>
+
+    <button id="animate-card">Animate Card</button>
+
+  </div>
+
+  <script>
+
+    $(document).ready(function(){
+
+      // GET & SET
+
+      $("#show-name").click(function(){
+        let name = $("#student-name").text();
+        $("#output").text(name);
+      });
+
+      $("#change-name").click(function(){
+        $("#student-name").text("ACP Pradyuman Singh");
+      });
+
+      $("#show-bio").click(function(){
+        let bio = $("#student-bio").html();
+        $("#output").text(bio);
+      });
+
+      $("#get-input").click(function(){
+        let value = $("#nickname-input").val();
+        $("#output").text(value);
+      });
+
+      $("#set-input").click(function(){
+        $("#nickname-input").val("CID Legend");
+      });
+
+
+      // CSS CLASSES
+
+      $("#highlight-card").click(function(){
+        $("#profile-card").addClass("highlighted");
+      });
+
+      $("#remove-highlight").click(function(){
+        $("#profile-card").removeClass("highlighted");
+      });
+
+      $("#toggle-dark").click(function(){
+        $("#profile-card").toggleClass("dark-mode");
+      });
+
+      $("#toggle-rounded").click(function(){
+        $("#profile-photo").toggleClass("rounded");
+      });
+
+
+      // CSS METHOD
+
+      $("#red-bg").click(function(){
+        $("#profile-card").css("background","#a01708");
+      });
+
+      $("#reset-bg").click(function(){
+        $("#profile-card").css("background","#ffffff");
+      });
+
+
+      // HIDE & SHOW
+
+      $("#hide-photo").click(function(){
+        $("#profile-photo").hide("slow");
+      });
+
+      $("#show-photo").click(function(){
+        $("#profile-photo").show("slow");
+      });
+
+      $("#toggle-bio").click(function(){
+        $("#student-bio").toggle();
+      });
+
+
+      // FADE
+
+      $("#fade-out").click(function(){
+        $("#profile-card").fadeOut();
+      });
+
+      $("#fade-in").click(function(){
+        $("#profile-card").fadeIn();
+      });
+
+      $("#fade-half").click(function(){
+        $("#profile-card").fadeTo(1000,0.5);
+      });
+
+
+      // SLIDE
+
+      $("#slide-up").click(function(){
+        $("#skills-list").slideUp();
+      });
+
+      $("#slide-down").click(function(){
+        $("#skills-list").slideDown();
+      });
+
+      $("#slide-toggle").click(function(){
+        $("#skills-list").slideToggle();
+      });
+
+
+      // ANIMATE
+
+      $("#animate-card").click(function(){
+
+        $("#profile-card")
+
+        .animate({
+          marginLeft:"200px"
+        },1000)
+
+        .animate({
+          marginLeft:"0px"
+        },1000);
+
+      });
+
+
+      // EVENTS
+
+      $("#profile-photo").mouseenter(function(){
+        $("#profile-photo").addClass("shadow");
+      });
+
+      $("#profile-photo").mouseleave(function(){
+        $("#profile-photo").removeClass("shadow");
+      });
+
+
+      // KEY PRESS EVENT
+
+      $("#nickname-input").keypress(function(event){
+        $("#output").text("Pressed Key: " + event.key);
+      });
+
+    });
+
+  </script>
+
+</body>
+</html>
