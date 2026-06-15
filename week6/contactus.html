@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact</title>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0d0f14;
+      --surface:   #161b25;
+      --surface-2: #1e2535;
+      --border:    rgba(255,255,255,0.08);
+      --border-2:  rgba(255,255,255,0.14);
+      --accent:    #6c8ef5;
+      --accent-h:  #8aabff;
+      --text:      #e8eaf2;
+      --muted:     #8b92a8;
+      --success:   #34d399;
+      --error:     #f87171;
+      --radius:    12px;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 2.5rem 2rem;
+      width: 100%;
+      max-width: 480px;
+    }
+
+    .card-header {
+      margin-bottom: 2rem;
+    }
+
+    .card-header h1 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      color: var(--text);
+    }
+
+    .card-header p {
+      margin-top: 6px;
+      font-size: 0.875rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .field {
+      margin-bottom: 1.25rem;
+    }
+
+    label {
+      display: block;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      color: var(--muted);
+      margin-bottom: 6px;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+    }
+
+    input, textarea {
+      width: 100%;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-size: 0.9375rem;
+      font-family: inherit;
+      padding: 0.75rem 1rem;
+      transition: border-color 0.15s, box-shadow 0.15s;
+      outline: none;
+      resize: none;
+    }
+
+    input::placeholder, textarea::placeholder { color: var(--muted); opacity: 0.6; }
+
+    input:focus, textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(108,142,245,0.15);
+    }
+
+    textarea { min-height: 130px; line-height: 1.6; }
+
+    button {
+      width: 100%;
+      margin-top: 0.5rem;
+      padding: 0.8125rem 1rem;
+      background: var(--accent);
+      color: #fff;
+      font-size: 0.9375rem;
+      font-weight: 600;
+      font-family: inherit;
+      border: none;
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: background 0.15s, transform 0.1s, opacity 0.15s;
+      letter-spacing: 0.01em;
+    }
+
+    button:hover:not(:disabled) { background: var(--accent-h); }
+    button:active:not(:disabled) { transform: scale(0.985); }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    #status {
+      margin-top: 1rem;
+      padding: 0.75rem 1rem;
+      border-radius: var(--radius);
+      font-size: 0.875rem;
+      font-weight: 500;
+      text-align: center;
+      display: none;
+    }
+
+    #status.success {
+      display: block;
+      background: rgba(52,211,153,0.1);
+      border: 1px solid rgba(52,211,153,0.25);
+      color: var(--success);
+    }
+
+    #status.error {
+      display: block;
+      background: rgba(248,113,113,0.1);
+      border: 1px solid rgba(248,113,113,0.25);
+      color: var(--error);
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.65s linear infinite;
+      vertical-align: -2px;
+      margin-right: 6px;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <div class="card-header">
+    <h1>Get in touch</h1>
+    <p>Fill out the form below and we'll get back to you as soon as possible.</p>
+  </div>
+
+  <div class="field">
+    <label for="name">Name</label>
+    <input id="name" type="text" placeholder="Jane Smith" autocomplete="name" />
+  </div>
+
+  <div class="field">
+    <label for="email">Email</label>
+    <input id="email" type="email" placeholder="jane@example.com" autocomplete="email" />
+  </div>
+
+  <div class="field">
+    <label for="phone">Phone Number</label>
+    <input id="phone" type="tel" placeholder="+977 98XXXXXXXX" autocomplete="tel" />
+  </div>
+
+  <div class="field">
+    <label for="message">Message</label>
+    <textarea id="message" placeholder="What's on your mind?"></textarea>
+  </div>
+
+  <button id="submitBtn" onclick="submitForm()">Send message</button>
+  <div id="status"></div>
+</div>
+
+<script>
+  const firebaseConfig = {
+    apiKey:            "AIzaSyApdURMlzx2Fq421Wcqb8jDyO0CYw29puE",
+    authDomain:        "week-6-69409.firebaseapp.com",
+    projectId:         "week-6-69409",
+    storageBucket:     "week-6-69409.firebasestorage.app",
+    messagingSenderId: "803201564979",
+    appId:             "1:803201564979:web:4f4a78a7448d9855af7e46",
+    measurementId:     "G-717E33C87Z",
+    databaseURL:       "https://week-6-69409-default-rtdb.firebaseio.com"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+
+  function setStatus(type, msg) {
+    const el = document.getElementById("status");
+    el.className = type;
+    el.textContent = msg;
+  }
+
+  function submitForm() {
+    const name    = document.getElementById("name").value.trim();
+    const email   = document.getElementById("email").value.trim();
+    const phone   = document.getElementById("phone").value.trim();
+    const message = document.getElementById("message").value.trim();
+    const btn     = document.getElementById("submitBtn");
+
+    if (!name || !email || !phone || !message) {
+      setStatus("error", "Please fill in all fields.");
+      return;
+    }
+
+    const data = {
+      name,
+      email,
+      phone,
+      message,
+      timestamp: new Date().toISOString()
+    };
+
+    console.log("Submitting contact form data:", data);
+
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span>Sending…';
+    document.getElementById("status").className = "";
+    document.getElementById("status").textContent = "";
+
+    db.ref("contacts").push(data)
+      .then(() => {
+        console.log("Success: contact saved to Firebase.");
+        setStatus("success", "✓ Message sent! We'll be in touch soon.");
+        document.getElementById("name").value    = "";
+        document.getElementById("email").value   = "";
+        document.getElementById("phone").value   = "";
+        document.getElementById("message").value = "";
+      })
+      .catch((err) => {
+        console.error("Error saving contact:", err);
+        setStatus("error", "Something went wrong. Please try again.");
+      })
+      .finally(() => {
+        btn.disabled = false;
+        btn.innerHTML = "Send message";
+      });
+  }
+</script>
+
+</body>
+</html>

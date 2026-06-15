@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Firebase Realtime DB Demo</title>
+</head>
+<body>
+  <h1>Firebase Realtime Database CRUD</h1>
+  <script type="module" src="main.js"></script>
+
+  <h2>Create / Write User</h2>
+  <input type="text" id="create-id" placeholder="User ID" /> 1
+  <input type="text" id="create-name" placeholder="Name" /> Abiral
+  <input type="email" id="create-email" placeholder="Email" /> a@b.com
+  <button onclick="writeUserData(
+    document.getElementById('create-id').value,
+    document.getElementById('create-name').value,
+    document.getElementById('create-email').value
+  )">Write User</button>
+
+  <h2>Read Users</h2>
+  <button onclick="readUser()">Read All Users (Check Console)</button>
+
+  <h3>Read One User by ID</h3>
+  <input type="text" id="read-id" placeholder="User ID" />
+  <button onclick="readUserById(document.getElementById('read-id').value)">Read User</button>
+  <p id="read-result"></p>
+
+  <h2>Update User</h2>
+  <input type="text" id="update-id" placeholder="User ID" />
+  <button onclick="fetchUserForUpdate(document.getElementById('update-id').value)">Fetch User</button>
+  <br /><br />
+  <input type="text" id="update-name" placeholder="New Name" />
+  <input type="email" id="update-email" placeholder="New Email" />
+  <button onclick="updateUserData(
+    document.getElementById('update-id').value,
+    {
+      name: document.getElementById('update-name').value,
+      email: document.getElementById('update-email').value
+    }
+  )">Update User</button>
+
+  <h2>Delete User</h2>
+  <input type="text" id="delete-id" placeholder="User ID" />
+  <button onclick="deleteUserData(document.getElementById('delete-id').value)">Delete User</button>
+</body>
+</html>
